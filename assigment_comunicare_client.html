@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Student Management System</h1>
+
+    <form id="addStudentForm">
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" required><br>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" required><br>
+
+        <label for="averageGrade">Average Grade:</label>
+        <input type="text" id="averageGrade" required><br>
+
+        <button type="button" onclick="addStudent()">Add Student</button>
+    </form>
+
+    <hr>
+
+    <label for="searchStudentId">Search Student by ID:</label>
+    <input type="text" id="searchStudentId" required>
+    <button type="button" onclick="getStudent()">Search</button>
+
+    <div id="studentInfo"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Add Student
+            window.addStudent = function () {
+                var data = {
+                    first_name: $('#firstName').val(),
+                    last_name: $('#lastName').val(),
+                    average_grade: $('#averageGrade').val()
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/add_student',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert(response.message);
+                    }
+                });
+            };
+
+            // Get Student by ID
+            window.getStudent = function () {
+                var studentId = $('#searchStudentId').val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/get_student/' + studentId,
+                    success: function (response) {
+                        $('#studentInfo').html(JSON.stringify(response, null, 2));
+                    }
+                });
+            };
+        });
+    </script>
+</body>
+</html>
